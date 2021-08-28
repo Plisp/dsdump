@@ -4,7 +4,7 @@ Reference implementations of various data structures.
 Will be tested, but not generic.
 
 - [ ] ring deque
-- [ ] binary heap
+- [x] binary heap
 - [x] skiplist
 - [ ] red-black tree
 - [ ] B+tree

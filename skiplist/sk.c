@@ -2,16 +2,15 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX_HEIGHT 20
+#define MAX_HEIGHT 16
 
 // maintains a map of int keys to strings, in increasing order
 // you must inline the skiplist head (it saves an indirection)
-struct skiplist {
+typedef struct skiplist {
 	long key;
 	char *val; // valid null-terminated strings for now
 	struct skiplist *tower[MAX_HEIGHT+1]; // a null sentinel lies atop the tower
-};
-typedef struct skiplist Skiplist;
+} Skiplist;
 
 Skiplist *skiplist_new() { // free by deleting all entries and free()ing the head
 	Skiplist *new = malloc(sizeof *new);
@@ -19,13 +18,15 @@ Skiplist *skiplist_new() { // free by deleting all entries and free()ing the hea
 	return new;
 }
 
+// Generates a random valid height between 1 and MAX_HEIGHT
 // TODO using a flexible array member for towers is probably a good idea if
 // the data set is large. this needs to be modified to generate larger heights
 int rand_height() {
-	int cap = 1 << MAX_HEIGHT-1;
+	int cap = 1 << MAX_HEIGHT-1; // this guarantees we hit a maximum, not UB
 	return __builtin_ctz(rand() | cap) + 1;
 }
 
+// returns the string value corresponding to KEY in SK in O(log n) average time
 char *skiplist_search(Skiplist *sk, long key)
 {
 	int height = 0;
@@ -39,7 +40,7 @@ char *skiplist_search(Skiplist *sk, long key)
 	return (sk->key == key) ? sk->val : NULL;
 }
 
-// inserts VAL into SK with key KEY
+// inserts VAL into SK with key KEY in O(log n) average time
 Skiplist *skiplist_insert(Skiplist *sk, long key, char *val)
 {
 	Skiplist *head = sk;
@@ -52,7 +53,7 @@ Skiplist *skiplist_insert(Skiplist *sk, long key, char *val)
 		while (sk->tower[height] && key > sk->tower[height]->key) {
 			sk = sk->tower[height];
 		}
-		if(height+1 <= new_height) // height is an index
+		if (height+1 <= new_height) // height is an index
 			stack[height] = &sk->tower[height];
 	}
 	Skiplist *new = skiplist_new();
@@ -67,20 +68,20 @@ Skiplist *skiplist_insert(Skiplist *sk, long key, char *val)
 }
 
 // returns the value corresponding to KEY, and deletes it from the skiplist,
-// (will be NULL if KEY does not exist)
+// (will be NULL if KEY does not exist) in O(log n) average time
 char *skiplist_delete(Skiplist *sk, long key)
 {
-	if(!sk->tower[0]) return NULL;
+	if (!sk->tower[0]) return NULL;
 
 	int height = MAX_HEIGHT;
 	while (--height >= 0) {
 		while (sk->tower[height] && key > sk->tower[height]->key) {
 			sk = sk->tower[height];
 		}
-		if(sk->tower[height] && sk->tower[height]->key == key) {
+		if (sk->tower[height] && sk->tower[height]->key == key) {
 			Skiplist *found = sk->tower[height];
 			sk->tower[height] = found->tower[height];
-			if(height == 0) {
+			if (height == 0) {
 				char *val = found->val;
 				free(found);
 				return val;
@@ -102,6 +103,7 @@ void skiplist_print_node(Skiplist *sk) {
 	puts("");
 }
 
+// iterates through all entries in the skiplist. O(n)
 void skiplist_foreach(Skiplist *sk, void (*cb)(Skiplist *)) {
 	while (sk = sk->tower[0]) cb(sk);
 }
@@ -109,6 +111,10 @@ void skiplist_foreach(Skiplist *sk, void (*cb)(Skiplist *)) {
 int main() {
 	srand(time(NULL));
 	Skiplist *sk = skiplist_new();
+	for (int i = 0; i < 1000000; i++) {
+		skiplist_insert(sk, rand(), "test");
+	}
+	/*
 	skiplist_insert(sk, 1, "hello");
 	skiplist_foreach(sk, &skiplist_print_node);
 	skiplist_insert(sk, 63, "test");
@@ -124,5 +130,6 @@ int main() {
 	char *val = skiplist_delete(sk, 25);
 	printf("deleting 25 - %s!\n", val);
 	skiplist_foreach(sk, &skiplist_print_node);
+	*/
 	return 0;
 }
