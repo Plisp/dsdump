@@ -41,7 +41,7 @@ void heap_push(Heap *heap, long item) {
 	long *a = heap->data;
 	size_t i = heap->size, parent = i/2;
 	//
-	while (parent > 0 && a[i] > a[parent]) {
+	while (parent != 0 && a[i] > a[parent]) {
 		swap(&a[i], &a[parent]);
 		i = parent, parent = i/2;
 	}
@@ -64,7 +64,7 @@ long heap_pop(Heap *heap) {
 		left = i*2, right = i*2 + 1;
 		if (right >= heap->size) break;
 		// swap with larger child > other child
-		max_child = a[left] > a[right] ? left : right;
+		max_child = left + (a[left] < a[right]);
 		if (a[max_child] > a[i])
 			swap(&a[max_child], &a[i]);
 		else break;
