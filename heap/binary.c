@@ -34,8 +34,8 @@ void swap(long *a, long *b) { long tmp = *a; *a = *b; *b = tmp; }
 // adds an item to the heap in O(log n) time
 void heap_push(Heap *heap, long item) {
 	if (heap->size == heap->cap) {
-		heap->data = realloc(heap->data, heap->cap*2);
 		heap->cap *= 2;
+		heap->data = realloc(heap->data, heap->cap);
 	}
 	heap->data[heap->size] = item;
 	long *a = heap->data;
@@ -50,11 +50,8 @@ void heap_push(Heap *heap, long item) {
 
 // returns and removes the largest item from HEAP in O(log n) time
 long heap_pop(Heap *heap) {
-	if (heap->size == 1) return -1;
-	if (heap->size < heap->cap/2) {
-		heap->data = realloc(heap->data, heap->cap/2);
-		heap->cap /= 2;
-	}
+	if (heap->size == 1)
+		return -1;
 	long popped = heap_peek(heap);
 	heap->data[1] = heap->data[heap->size-1];
 	// sift data[1] down
@@ -70,6 +67,10 @@ long heap_pop(Heap *heap) {
 		else break;
 	}
 	heap->size--;
+	if (heap->size <= heap->cap/3) { // O(1) amortized time spent resizing
+		heap->cap = heap->size * 2;
+		heap->data = realloc(heap->data, heap->cap);
+	}
 	return popped;
 }
 

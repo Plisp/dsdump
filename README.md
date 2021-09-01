@@ -1,9 +1,10 @@
 # dsdump
 
 Reference implementations of various data structures.
+Optimized for clarity, from which all else follows.
 Will be tested, but not generic.
 
-- [ ] ring deque
+- [x] ring deque
 - [x] binary heap
 - [x] skiplist
 - [ ] red-black tree
