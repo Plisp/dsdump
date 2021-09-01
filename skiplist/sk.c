@@ -14,7 +14,7 @@ typedef struct skiplist {
 
 Skiplist *skiplist_new() { // free by deleting all entries and free()ing the head
 	Skiplist *new = malloc(sizeof *new);
-	*new = (struct skiplist) {0};
+	*new = (Skiplist) {0};
 	return new;
 }
 

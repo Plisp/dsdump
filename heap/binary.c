@@ -18,15 +18,17 @@ Heap *heap_new() {
 	struct heap *new = malloc(sizeof *new);
 	new->size = 1;
 	new->cap = 2;
+	new->data = malloc(sizeof(long) * 2);
 	return new;
 }
 
 void heap_free(Heap *heap) { free(heap->data); free(heap); }
 
 // returns the number of items currently in the heap in O(1)
-size_t heap_count(Heap *heap) { return heap->size; }
+size_t heap_count(Heap *heap) { return heap->size - 1; }
 
-// returns the top item in the heap in O(1) time
+// returns the top item in the heap in O(1) time.
+// TODO undefined behavior if the heap is empty
 long heap_peek(Heap *heap) { return heap->data[1]; }
 
 void swap(long *a, long *b) { long tmp = *a; *a = *b; *b = tmp; }
@@ -37,10 +39,9 @@ void heap_push(Heap *heap, long item) {
 		heap->cap *= 2;
 		heap->data = realloc(heap->data, heap->cap);
 	}
-	heap->data[heap->size] = item;
 	long *a = heap->data;
 	size_t i = heap->size, parent = i/2;
-	//
+	a[i] = item;
 	while (parent != 0 && a[i] > a[parent]) {
 		swap(&a[i], &a[parent]);
 		i = parent, parent = i/2;
@@ -49,9 +50,8 @@ void heap_push(Heap *heap, long item) {
 }
 
 // returns and removes the largest item from HEAP in O(log n) time
+// TODO undefined behavior if the heap is empty
 long heap_pop(Heap *heap) {
-	if (heap->size == 1)
-		return -1;
 	long popped = heap_peek(heap);
 	heap->data[1] = heap->data[heap->size-1];
 	// sift data[1] down
