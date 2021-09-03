@@ -8,8 +8,17 @@ Will be tested, but not generic.
 - [x] binary heap
 - [x] skiplist
 - [ ] red-black tree
-- [ ] B+tree
-- [ ] radix trees...
-- [ ] hash tables...
+- [ ] ab-trees
+  - [ ] B-tree
+  - [ ] B+tree
+  - [ ] CSB+tree
+- [ ] radix trees
+  - [ ] level compresssed (LPC-trie)
+  - [ ] adaptive spans (ART)
+  - [ ] my own thing...
+- [ ] hash tables
+  - [ ] linear/quadratic probing
+  - [ ] robin hood
+  - [ ] cuckoo
 - [ ] treap
 - [ ] bloom filter

@@ -34,7 +34,8 @@ long heap_peek(Heap *heap) { return heap->data[1]; }
 void swap(long *a, long *b) { long tmp = *a; *a = *b; *b = tmp; }
 
 // adds an item to the heap in O(log n) time
-void heap_push(Heap *heap, long item) {
+void heap_push(Heap *heap, long item)
+{
 	if (heap->size == heap->cap) {
 		heap->cap *= 2;
 		heap->data = realloc(heap->data, heap->cap);
@@ -51,7 +52,8 @@ void heap_push(Heap *heap, long item) {
 
 // returns and removes the largest item from HEAP in O(log n) time
 // TODO undefined behavior if the heap is empty
-long heap_pop(Heap *heap) {
+long heap_pop(Heap *heap)
+{
 	long popped = heap_peek(heap);
 	heap->data[1] = heap->data[heap->size-1];
 	// sift data[1] down
