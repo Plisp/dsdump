@@ -28,8 +28,7 @@ void heap_free(Heap *heap) { free(heap->data); free(heap); }
 size_t heap_count(Heap *heap) { return heap->size - 1; }
 
 // returns the top item in the heap in O(1) time.
-// TODO undefined behavior if the heap is empty
-long heap_peek(Heap *heap) { return heap->data[1]; }
+long heap_peek(Heap *heap) { return heap->size > 1 ? heap->data[1] : -1; }
 
 void swap(long *a, long *b) { long tmp = *a; *a = *b; *b = tmp; }
 
@@ -50,11 +49,12 @@ void heap_push(Heap *heap, long item)
 	heap->size++;
 }
 
-// returns and removes the largest item from HEAP in O(log n) time
-// TODO undefined behavior if the heap is empty
+// returns and removes the largest item in HEAP in O(log n) worst case
 long heap_pop(Heap *heap)
 {
 	long popped = heap_peek(heap);
+	if(popped == -1)
+		return -1;
 	heap->data[1] = heap->data[heap->size-1];
 	// sift data[1] down
 	long *a = heap->data;
@@ -62,7 +62,7 @@ long heap_pop(Heap *heap)
 		i = max_child;
 		left = i*2, right = i*2 + 1;
 		if (right >= heap->size) break;
-		// swap with larger child > other child
+		// note: right = left + 1
 		max_child = left + (a[left] < a[right]);
 		if (a[max_child] > a[i])
 			swap(&a[max_child], &a[i]);

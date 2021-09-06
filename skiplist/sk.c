@@ -4,12 +4,13 @@
 
 #define MAX_HEIGHT 16
 
-// maintains a map of int keys to strings, in increasing order
-// you must inline the skiplist head (it saves an indirection)
+// maintains a map of long keys to C strings, in increasing order
+// you should inline the skiplist head (it saves an indirection)
 typedef struct skiplist {
 	long key;
-	char *val; // valid null-terminated strings for now
-	struct skiplist *tower[MAX_HEIGHT+1]; // a null sentinel lies atop the tower
+	char *val;
+	// a null sentinel lies atop the tower, this eliminates a bounds check
+	struct skiplist *tower[MAX_HEIGHT+1];
 } Skiplist;
 
 Skiplist *skiplist_new() { // free by deleting all entries and free()ing the head
@@ -23,10 +24,12 @@ Skiplist *skiplist_new() { // free by deleting all entries and free()ing the hea
 // the data set is large. this needs to be modified to generate larger heights
 int rand_height() {
 	int cap = 1 << MAX_HEIGHT-1; // this guarantees we hit a maximum, not UB
-	return __builtin_ctz(rand() | cap) + 1;
+	// count-trailing-zeroes counts low zero bits or breaks if you pass 0
+	return __builtin_ctz(rand() | cap) + 1; // +1 so we don't get 0 height
 }
 
-// returns the string value corresponding to KEY in SK in O(log n) average time
+// returns the string value corresponding to KEY in SK in O(log n) on average,
+// O(n) worst case
 char *skiplist_search(Skiplist *sk, long key)
 {
 	int height = 0;
@@ -40,7 +43,7 @@ char *skiplist_search(Skiplist *sk, long key)
 	return (sk->key == key) ? sk->val : NULL;
 }
 
-// inserts VAL into SK with key KEY in O(log n) average time
+// inserts VAL into SK with key KEY in O(log n) average time, O(n) worst case
 Skiplist *skiplist_insert(Skiplist *sk, long key, char *val)
 {
 	Skiplist *head = sk;
@@ -68,7 +71,8 @@ Skiplist *skiplist_insert(Skiplist *sk, long key, char *val)
 }
 
 // returns the value corresponding to KEY, and deletes it from the skiplist,
-// (will be NULL if KEY does not exist) in O(log n) average time
+// (will be NULL if KEY does not exist) in O(log n) average time,
+// O(n) worst case
 char *skiplist_delete(Skiplist *sk, long key)
 {
 	if (!sk->tower[0]) return NULL;
