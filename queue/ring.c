@@ -86,7 +86,9 @@ long queue_pop_back(Queue *q)
 	return item;
 }
 
+#ifdef TEST
 int main() {
 	Queue *q = queue_new();
 	queue_free(q);
 }
+#endif

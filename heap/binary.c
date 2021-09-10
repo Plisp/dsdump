@@ -30,7 +30,7 @@ size_t heap_count(Heap *heap) { return heap->size - 1; }
 // returns the top item in the heap in O(1) time.
 long heap_peek(Heap *heap) { return heap->size > 1 ? heap->data[1] : -1; }
 
-void swap(long *a, long *b) { long tmp = *a; *a = *b; *b = tmp; }
+static void swap(long *a, long *b) { long tmp = *a; *a = *b; *b = tmp; }
 
 // adds an item to the heap in O(log n) time
 void heap_push(Heap *heap, long item)
@@ -76,7 +76,9 @@ long heap_pop(Heap *heap)
 	return popped;
 }
 
+#ifdef TEST
 int main() {
 	Heap *heap = heap_new();
 	heap_free(heap);
 }
+#endif

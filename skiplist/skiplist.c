@@ -22,7 +22,7 @@ Skiplist *skiplist_new() { // free by deleting all entries and free()ing the hea
 // Generates a random valid height between 1 and MAX_HEIGHT
 // TODO using a flexible array member for towers is probably a good idea if
 // the data set is large. this needs to be modified to generate larger heights
-int rand_height() {
+static int rand_height() {
 	int cap = 1 << MAX_HEIGHT-1; // this guarantees we hit a maximum, not UB
 	// count-trailing-zeroes counts low zero bits or breaks if you pass 0
 	return __builtin_ctz(rand() | cap) + 1; // +1 so we don't get 0 height
@@ -112,6 +112,7 @@ void skiplist_foreach(Skiplist *sk, void (*cb)(Skiplist *)) {
 	while (sk = sk->tower[0]) cb(sk);
 }
 
+#ifdef TEST
 int main() {
 	srand(time(NULL));
 	Skiplist *sk = skiplist_new();
@@ -137,3 +138,4 @@ int main() {
 	*/
 	return 0;
 }
+#endif
