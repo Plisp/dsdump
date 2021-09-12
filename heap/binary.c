@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-
+//
 // implements a max-heap that grows by a factor of 2 when full
 // children of x exist at 2*x and 2*x+1, parent is at x/2 truncated
 //       [1]
@@ -9,6 +7,9 @@
 //
 // note that the initial size is 1 (counting the sentinel), so that with
 // capacity 2, we never try to shrink and expanding works simply by x2
+//
+#include "binary.h"
+
 typedef struct heap {
 	size_t size, cap;
 	long *data; //[sentinel][heap][ ][ ]

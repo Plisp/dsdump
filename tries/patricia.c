@@ -2,14 +2,10 @@
 // patricia (crit-bit) trie heavily inspired by Tony Finch's elegant impl,
 // available at https://github.com/fanf2/qp
 //
-
-#include <assert.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "patricia.h"
 
 struct inner {
-	union Trie *child;
+	Trie *child;
 	long tag : 1,     // XXX this assumes 64-bit little endian
 		 index : 63; // index of diffientiating bit (from high to low)
 };
@@ -25,7 +21,7 @@ struct leaf {
 // a map of 64-bit integers to word-aligned value pointers
 // For strings see https://github.com/fanf2/qp/blob/master/cb.c, though the
 // idea should be clear using integers
-typedef union Trie {
+typedef union trie {
 	struct inner inner;
 	struct leaf leaf;
 } Trie;
@@ -57,7 +53,7 @@ void *trie_search(Trie *root, long key)
 // inserts VAL under KEY in O(k)
 void trie_insert(Trie *root, long key, void *val)
 {
-	assert(!((uintptr_t)val & 3));
+	//assert(!((uintptr_t)val & 3));
 	// in case of an empty trie, an empty 0 entry is created safety which may
 	// be overwritten later
 	Trie *node = root;

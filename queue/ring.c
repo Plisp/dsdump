@@ -1,10 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
+//
+// implements a ring queue (deque) supporting pushing/popping from both ends
+// we pop from elems[tail] and push to elems[head] (which is outside the queue)
+//
+#include "ring.h"
 
 #define MAX(a, b) ((a)>(b)?(a):(b))
 
-// implements a ring queue (deque) supporting pushing/popping from both ends
-// we pop from elems[tail] and push to elems[head] (which is outside the queue)
 typedef struct queue {
 	size_t cap;
 	size_t tail, head; // will unsigned wrap

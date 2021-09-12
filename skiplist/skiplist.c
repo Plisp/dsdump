@@ -1,11 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+//
+// maintains a map of long keys to C strings, in increasing order
+// you should inline the skiplist head (it saves an indirection)
+//
+#include "skiplist.h"
 
 #define MAX_HEIGHT 16
 
-// maintains a map of long keys to C strings, in increasing order
-// you should inline the skiplist head (it saves an indirection)
 typedef struct skiplist {
 	long key;
 	char *val;
@@ -113,6 +113,7 @@ void skiplist_foreach(Skiplist *sk, void (*cb)(Skiplist *)) {
 }
 
 #ifdef TEST
+#include <time.h>
 int main() {
 	srand(time(NULL));
 	Skiplist *sk = skiplist_new();
