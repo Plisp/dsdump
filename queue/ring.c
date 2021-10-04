@@ -29,11 +29,12 @@ size_t queue_count(Queue *q) { return q->head - q->tail; };
 
 static void resize(Queue *q) {
 	size_t count = q->head - q->tail;
-	long *newbuf = malloc(MAX(1, 2*count) * sizeof(long));
+	long newcap = MAX(1, 2*count);
+	long *newbuf = malloc(newcap * sizeof(long));
 	// TODO check if the division is impacting performance. branch instead?
 	for (size_t i = 0; i < count; i++)
 		newbuf[i] = q->elems[(q->tail + i) % q->cap];
-	q->cap = 2*count;
+	q->cap = newcap;
 	q->tail = 0;
 	q->head = count;
 	free(q->elems);
@@ -87,9 +88,28 @@ long queue_pop_back(Queue *q)
 	return item;
 }
 
+void queue_print(Queue *q) {
+	printf("tail: %zd head: %zd ", q->tail%q->cap, q->head%q->cap);
+	for(size_t i = 0; i < q->cap; i++)
+		printf("|%ld", q->elems[i]);
+	puts("|");
+}
+
 #ifdef TEST
 int main() {
 	Queue *q = queue_new();
+	queue_push_front(q, 1);
+	queue_push_front(q, 2);
+	queue_push_front(q, 3);
+	queue_push_front(q, 4);
+	printf("%ld\n", queue_pop(q));
+	printf("%ld\n", queue_pop_back(q));
+	queue_push(q, 5);
+	queue_push(q, 9);
+	printf("%ld\n", queue_pop(q));
+	printf("%ld\n", queue_pop(q));
+	printf("%ld\n", queue_pop(q));
+	printf("%ld\n", queue_pop(q));
 	queue_free(q);
 }
 #endif

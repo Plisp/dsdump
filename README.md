@@ -17,6 +17,7 @@ particular values of keys are avoided and left as an exercise to the reader.
 - [x] binary heap
 - [x] skiplist
 - [ ] red-black tree
+- [ ] treap
 - [ ] ab-trees
   - [ ] B-tree
   - [ ] B+tree
@@ -29,5 +30,4 @@ particular values of keys are avoided and left as an exercise to the reader.
   - [ ] linear/quadratic probing
   - [ ] robin hood
   - [ ] cuckoo
-- [ ] treap
 - [ ] bloom filter
