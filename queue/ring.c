@@ -90,7 +90,7 @@ long queue_pop_back(Queue *q)
 
 void queue_print(Queue *q) {
 	printf("tail: %zd head: %zd ", q->tail%q->cap, q->head%q->cap);
-	for(size_t i = 0; i < q->cap; i++)
+	for (size_t i = 0; i < q->cap; i++)
 		printf("|%ld", q->elems[i]);
 	puts("|");
 }

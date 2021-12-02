@@ -54,7 +54,7 @@ void heap_push(Heap *heap, long item)
 long heap_pop(Heap *heap)
 {
 	long popped = heap_peek(heap);
-	if(popped == -1)
+	if (popped == -1)
 		return -1;
 	heap->data[1] = heap->data[heap->size-1];
 	// sift data[1] down

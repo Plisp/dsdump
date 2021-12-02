@@ -23,6 +23,7 @@ particular values of keys are avoided and left as an exercise to the reader.
   - [ ] B+tree
   - [ ] CSB+tree
 - [ ] radix trees
+  - [x] radix (patricia) trie
   - [ ] level compresssed (LPC-trie)
   - [ ] adaptive spans (ART)
   - [ ] my own thing...

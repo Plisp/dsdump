@@ -42,7 +42,8 @@ static void find_child(Trie **node, long key) {
 	*node = &inner->child[dir];
 }
 
-// returns the value associated with KEY or NULL in O(k), k being key length
+// returns the value associated with KEY or NULL in O(k)
+// k being key length, which happens to be constant here (64-bit int keys)
 void *trie_search(Trie *root, long key)
 {
 	while (root->inner.tag)
@@ -50,12 +51,11 @@ void *trie_search(Trie *root, long key)
 	return (key == root->leaf.key) ? root->leaf.val : NULL;
 }
 
-// inserts VAL under KEY in O(k)
+// inserts VAL under KEY in the trie ROOT in O(k)
 void trie_insert(Trie *root, long key, void *val)
 {
 	//assert(!((uintptr_t)val & 3));
-	// in case of an empty trie, an empty 0 entry is created safety which may
-	// be overwritten later
+	// in case of an empty trie, an empty 0 entry is created safely
 	Trie *node = root;
 	while (node->inner.tag)
 		find_child(&node, key);
@@ -65,11 +65,13 @@ void trie_insert(Trie *root, long key, void *val)
 		node->leaf.val = val;
 		return;
 	}
-	int i = __builtin_clzl(key ^ oldkey);
+	// index of highest differing bit (leading 0s)
+	int i = __builtin_clzl(key ^ oldkey); // key != oldkey so arg isn't 0
 	int isset = key >> (63 - i) & 1;
+	// now knowing the earliest differing bit, rescan from the root for a node
 	node = root;
 	while (node->inner.tag) {
-		if(i < node->inner.index)
+		if (i < node->inner.index)
 			break;
 		find_child(&node, key);
 	}
@@ -90,13 +92,14 @@ void *trie_delete(Trie *trie, long key)
 	int dir;
 	while (root->inner.tag) {
 		parent = root;
-		find_child(&root, key);
+		dir = key >> (63 - root->inner.index) & 1;
+		root = &root->inner.child[dir];
 	}
-	if(key != root->leaf.key)
+	if (key != root->leaf.key)
 		return NULL;
 	void *val = root->leaf.val;
 	// root deletion
-	if(parent == NULL) {
+	if (parent == NULL) {
 		*trie = (Trie) {0};
 		return val; // in an empty trie val will be NULL. root tag was also 0
 	}
@@ -121,5 +124,9 @@ int main() {
 	printf("2 maps to %s\n", (char *)trie_search(t, 2));
 	trie_delete(t, 1);
 	printf("2 maps to %s\n", (char *)trie_search(t, 2));
+	trie_delete(t, 2);
+	free(s1);
+	free(s2);
+	free(t);
 }
 #endif
